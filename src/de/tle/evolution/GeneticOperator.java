@@ -1,6 +1,8 @@
 package de.tle.evolution;
 
+import java.util.List;
+
 public interface GeneticOperator {
 
-  Individual operate(Individual... selectedIndividuals);
+  Individual operate(List<Individual> selectedIndividuals);
 }

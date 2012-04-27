@@ -1,5 +1,6 @@
 package de.tle.evolution;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -7,9 +8,15 @@ import java.util.List;
 public class Population implements Iterable<Individual> {
 
   protected List<Individual> individuals;
-  protected int generations = 0;
+  protected int age = 0;
 
   public Population() {
+    individuals = new ArrayList<Individual>();
+  }
+
+  public Population(List<Individual> individuals, int age) {
+    this.individuals = individuals;
+    this.age = age;
   }
 
   @Override
@@ -28,10 +35,12 @@ public class Population implements Iterable<Individual> {
   public int size() {
     return individuals.size();
   }
+  
+  public int getAge() {
+    return age;
+  }
 
-  public void selectFittest(int number) {
-    List<Individual> newGeneration = individuals.subList(0, number);
-    generations++;
-    individuals = newGeneration;
+  public List<Individual> getIndividuals() {
+    return Collections.unmodifiableList(individuals);
   }
 }

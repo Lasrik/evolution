@@ -1,46 +1,20 @@
 package de.tle.evolution;
 
+import de.tle.evolution.mutation.Mutation;
 import java.util.Comparator;
 import java.util.List;
 
 public abstract class Configuration {
 
-  protected int populationSize;
-  protected int numberOfParents;
-  protected int numberOfChildren;
-  protected int propabilityOfMutation;
+  protected Random random = new Random();
 
-  public int getNumberOfChildren() {
-    return numberOfChildren;
-  }
+  public abstract int getNumberOfChildren();
 
-  public void setNumberOfChildren(int numberOfChildren) {
-    this.numberOfChildren = numberOfChildren;
-  }
+  public abstract int getNumberOfParents();
 
-  public int getNumberOfParents() {
-    return numberOfParents;
-  }
+  public abstract int getPopulationSize();
 
-  public void setNumberOfParents(int numberOfParents) {
-    this.numberOfParents = numberOfParents;
-  }
-
-  public int getPopulationSize() {
-    return populationSize;
-  }
-
-  public void setPopulationSize(int populationSize) {
-    this.populationSize = populationSize;
-  }
-
-  public int getPropabilityOfMutation() {
-    return propabilityOfMutation;
-  }
-
-  public void setPropabilityOfMutation(int propabilityOfMutation) {
-    this.propabilityOfMutation = propabilityOfMutation;
-  }
+  public abstract int getPropabilityOfMutation();
 
   public abstract FitnessFunction getFitnessFunction();
 
@@ -53,4 +27,10 @@ public abstract class Configuration {
   public abstract Factory getFactory();
 
   public abstract Comparator<Individual> getFitnessComparator();
+
+  public abstract boolean terminationCriteriaMet(Population population);
+
+  public Random getRandom() {
+    return this.random;
+  }
 }

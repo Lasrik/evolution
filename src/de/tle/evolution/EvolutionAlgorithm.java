@@ -1,17 +1,23 @@
 package de.tle.evolution;
 
+import de.tle.evolution.mutation.Mutation;
+import java.util.List;
+import org.apache.log4j.Logger;
+
 public class EvolutionAlgorithm {
   /*
-  http://de.wikipedia.org/wiki/Evolutionsstrategie#Definition
-  http://de.wikipedia.org/wiki/Genetischer_Algorithmus#Praktisches_Vorgehen
-  http://de.wikipedia.org/wiki/Evolutionsstrategie#Arten
+   * http://de.wikipedia.org/wiki/Evolutionsstrategie#Definition
+   * http://de.wikipedia.org/wiki/Genetischer_Algorithmus#Praktisches_Vorgehen
+   * http://de.wikipedia.org/wiki/Evolutionsstrategie#Arten
    */
 
   protected Configuration config;
   protected Population population;
+  protected Logger log;
 
   public EvolutionAlgorithm(Configuration config) {
     this.config = config;
+    log = Logger.getLogger(getClass());
   }
 
   public void evolve() {
@@ -26,29 +32,27 @@ public class EvolutionAlgorithm {
     } while (terminationCriteriaNotMet());
   }
 
-  private void initPopulation() {
-    population = new Population();
-    for (int i = 0; i < config.populationSize; i++) {
-      Individual ind = config.getFactory().createRandomIndividual();
-      population.addIndividual(ind);
-    }
+  protected void initPopulation() {
+    log.trace("init Population");
+    population = config.getFactory().createInitialPopulation(config.getPopulationSize());
   }
 
-  private void calculateFitness() {
-    for (Individual individual : population) {
-      config.getFitnessFunction().evaluate(individual);
-    }
+  protected void calculateFitness() {
+    log.trace("calculate Fitness");
+    config.getFitnessFunction().evaluate(population);
   }
 
-  private void recombine() {
-    for (int i = 0; i < config.numberOfChildren; i++) {
-      Individual[] parents = config.getSelector().select(population);
+  protected void recombine() {
+    log.trace("recombine");
+    List<List<Individual>> allParents = config.getSelector().selectParents(population);
+    for (List<Individual> parents : allParents) {
       Individual child = config.getRecombinationOperator().operate(parents);
       population.addIndividual(child);
     }
   }
 
-  private void mutate() {
+  protected void mutate() {
+    log.trace("mutate");
     for (Individual individual : population) {
       if (mutationTakesPlace()) {
         Mutation m = chooseMutation();
@@ -57,20 +61,24 @@ public class EvolutionAlgorithm {
     }
   }
 
-  private void selectNextGeneration() {
-    population.sort();
-
+  protected void selectNextGeneration() {
+    log.trace("select next generation");
+    population = config.getSelector().selectNextGeneration(population);
   }
 
-  private boolean terminationCriteriaNotMet() {
-    throw new UnsupportedOperationException("Not yet implemented");
+  protected boolean terminationCriteriaNotMet() {
+    return !config.terminationCriteriaMet(population);
   }
 
-  private boolean mutationTakesPlace() {
-    throw new UnsupportedOperationException("Not yet implemented");
+  protected boolean mutationTakesPlace() {
+    int propability = config.getPropabilityOfMutation();
+    return config.getRandom().getNextPercentage() <= propability;
   }
 
-  private Mutation chooseMutation() {
-    throw new UnsupportedOperationException("Not yet implemented");
+  protected Mutation chooseMutation() {
+    List<Mutation> mutations = config.getMutations();
+    int number = config.getRandom().getNextInt(mutations.size());
+    
+    return mutations.get(number);
   }
 }

@@ -1,7 +1,12 @@
 package de.tle.evolution;
 
-public interface FitnessFunction {
+public abstract class FitnessFunction {
 
-  void evaluate(Individual ind);
+  public abstract void evaluate(Individual ind);
 
+  public void evaluate(Population population) {
+    for (Individual individual : population) {
+      evaluate(individual);
+    }
+  }
 }
