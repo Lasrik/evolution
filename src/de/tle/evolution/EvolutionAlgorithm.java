@@ -40,6 +40,7 @@ public class EvolutionAlgorithm {
   protected void calculateFitness() {
     log.trace("calculate Fitness");
     config.getFitnessFunction().evaluate(population);
+    log.debug(population);
   }
 
   protected void recombine() {
@@ -49,6 +50,7 @@ public class EvolutionAlgorithm {
       Individual child = config.getRecombinationOperator().operate(parents);
       population.addIndividual(child);
     }
+    log.debug("Recombine: " + population);
   }
 
   protected void mutate() {
@@ -64,6 +66,7 @@ public class EvolutionAlgorithm {
   protected void selectNextGeneration() {
     log.trace("select next generation");
     population = config.getSelector().selectNextGeneration(population);
+    log.debug("Next gen: " + population);
   }
 
   protected boolean terminationCriteriaNotMet() {

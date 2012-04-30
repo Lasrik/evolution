@@ -39,8 +39,28 @@ public class Population implements Iterable<Individual> {
   public int getAge() {
     return age;
   }
+  
+  public Individual getFittest() {
+    return individuals.get(0);
+  }
 
   public List<Individual> getIndividuals() {
     return Collections.unmodifiableList(individuals);
+  }
+  
+  @Override
+  public String toString() {
+    StringBuilder result = new StringBuilder();
+    result.append("Population [");
+    result.append(size());
+    result.append(", ");
+    for (Individual individual : individuals) {
+      result.append(individual.toString());
+      result.append(",");
+    }
+    
+    result.append("]");
+    
+    return result.toString();
   }
 }

@@ -149,7 +149,7 @@ public class Genom {
     this.chromosomes = newChromosomes;
   }
 
-  private int crossSum() {
+  public int crossSum() {
     int result = 0;
     for (int chromosom : chromosomes) {
       result += chromosom;
