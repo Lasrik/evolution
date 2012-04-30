@@ -9,7 +9,7 @@ public class Random {
   }
   
   public int getNextPercentage() {
-    return random.nextInt(100);
+    return getNextInt(100) + 1;
   }
   
   public int getNextInt(int max) {

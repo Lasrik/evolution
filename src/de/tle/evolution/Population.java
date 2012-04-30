@@ -63,4 +63,10 @@ public class Population implements Iterable<Individual> {
     
     return result.toString();
   }
+
+  void add(List<Individual> children) {
+    for (Individual child : children) {
+      addIndividual(child);
+    }
+  }
 }

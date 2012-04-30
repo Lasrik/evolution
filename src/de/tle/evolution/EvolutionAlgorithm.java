@@ -1,6 +1,7 @@
 package de.tle.evolution;
 
 import de.tle.evolution.mutation.Mutation;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
 
@@ -25,8 +26,10 @@ public class EvolutionAlgorithm {
     calculateFitness();
 
     do {
-      recombine();
-      mutate();
+      List<Individual> children = recombine();
+      mutate(children);
+      population.add(children);
+      
       calculateFitness();
       selectNextGeneration();
     } while (terminationCriteriaNotMet());
@@ -43,19 +46,23 @@ public class EvolutionAlgorithm {
     log.debug(population);
   }
 
-  protected void recombine() {
+  protected List<Individual> recombine() {
     log.trace("recombine");
+    
+    List<Individual> children = new ArrayList<Individual>(config.getNumberOfChildren());
+    
     List<List<Individual>> allParents = config.getSelector().selectParents(population);
     for (List<Individual> parents : allParents) {
       Individual child = config.getRecombinationOperator().operate(parents);
-      population.addIndividual(child);
+      children.add(child);
     }
-    log.debug("Recombine: " + population);
+    
+    return children;
   }
 
-  protected void mutate() {
+  protected void mutate(List<Individual> children) {
     log.trace("mutate");
-    for (Individual individual : population) {
+    for (Individual individual : children) {
       if (mutationTakesPlace()) {
         Mutation m = chooseMutation();
         m.mutate(individual);
@@ -66,7 +73,7 @@ public class EvolutionAlgorithm {
   protected void selectNextGeneration() {
     log.trace("select next generation");
     population = config.getSelector().selectNextGeneration(population);
-    log.debug("Next gen: " + population);
+    log.debug(population);
   }
 
   protected boolean terminationCriteriaNotMet() {
