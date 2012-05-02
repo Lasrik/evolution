@@ -1,13 +1,16 @@
 package de.tle.evolution;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.mockito.Mock;
-import de.tle.evolution.util.IsIterableContainingInOrder.*;
-
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.*;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 
 public class PopulationTest {
 
@@ -25,21 +28,29 @@ public class PopulationTest {
   @Before
   public void setUp() {
     population = new Population();
-    individuals = Arrays.asList(ind1, ind2, ind3, ind4);
+    individuals = new ArrayList(Arrays.asList(ind1, ind2, ind3, ind4));
     population.individuals = individuals;
   }
 
   @Test
   public void testIterator() {
+    Iterator<Individual> referenceIterator = individuals.iterator();
+    Iterator<Individual> testIterator = population.iterator();
+
+    while (testIterator.hasNext() && referenceIterator.hasNext()) {
+      assertThat(testIterator.next(), is(referenceIterator.next()));
+    }
+
+    assertTrue(!referenceIterator.hasNext() && !testIterator.hasNext());
   }
 
   @Test
   public void testAddIndividual() {
-    System.out.println("addIndividual");
-    Individual individual = null;
-    Population instance = new Population();
-    instance.addIndividual(individual);
-    fail("The test case is a prototype.");
+    Individual newIndividual = mock(Individual.class);
+
+    population.addIndividual(newIndividual);
+
+    assertThat(population.individuals, hasItem(newIndividual));
   }
 
   @Test
