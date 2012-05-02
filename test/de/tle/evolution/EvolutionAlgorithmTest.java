@@ -1,6 +1,7 @@
 package de.tle.evolution;
 
 import de.tle.evolution.mutation.Mutation;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
@@ -11,6 +12,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import static org.mockito.Mockito.*;
 import org.mockito.MockitoAnnotations;
+import static de.tle.evolution.util.IsIterableContainingInOrder.contains;
 
 public class EvolutionAlgorithmTest {
 
@@ -81,13 +83,13 @@ public class EvolutionAlgorithmTest {
   @Test
   public void testMutationTakesPlace() {
     when(random.getNextPercentage()).thenReturn(50);
-    
+
     // 100% - immer mutieren
     when(config.getPropabilityOfMutation()).thenReturn(100);
     boolean result = ea.mutationTakesPlace();
     assertThat(result, is(true));
 
-    // 0% nie mutieren
+    // 0% - nie mutieren
     when(config.getPropabilityOfMutation()).thenReturn(0);
     result = ea.mutationTakesPlace();
     assertThat(result, is(false));
@@ -98,7 +100,7 @@ public class EvolutionAlgorithmTest {
     assertThat(result, is(true));
 
     when(random.getNextPercentage()).thenReturn(10);
-    when(config.getPropabilityOfMutation()).thenReturn(3);
+    when(config.getPropabilityOfMutation()).thenReturn(5);
     result = ea.mutationTakesPlace();
     assertThat(result, is(false));
   }
@@ -136,10 +138,40 @@ public class EvolutionAlgorithmTest {
 
     ea.mutate(children);
 
-    ArgumentCaptor<Individual> captor = ArgumentCaptor.forClass(Individual.class);
     verify(mut1).mutate(child1);
     verify(mut2).mutate(child2);
     verify(mut3).mutate(child3);
     verify(mut2).mutate(child4);
+  }
+
+  @Test
+  public void testMutate2() {
+    when(config.getPropabilityOfMutation()).thenReturn(50);
+    when(random.getNextPercentage()).thenReturn(30).thenReturn(60).thenReturn(30);
+    when(random.getNextInt(anyInt())).thenReturn(0).thenReturn(1).thenReturn(2);
+
+    ea.mutate(children);
+
+    verify(mut1).mutate(child1);
+    verify(mut2).mutate(child3);
+    verify(mut3).mutate(child4);
+  }
+
+  @Test
+  public void testRecombine() {
+    Selector selector = mock(Selector.class);
+    List<List<Individual>> parents = new ArrayList<List<Individual>>(children.size());
+    List<Individual> parent = mock(List.class);
+    for (int i = 0; i < children.size(); i++) {
+      parents.add(parent);
+    }
+    
+    when(selector.selectParents(any(Population.class))).thenReturn(parents);
+    
+    GeneticOperator operator = mock(GeneticOperator.class);
+    
+    when(operator.operate(anyList())).thenReturn(child1, child2, child3, child4);
+    
+    List<Individual> actualChildren = ea.recombine();
   }
 }
