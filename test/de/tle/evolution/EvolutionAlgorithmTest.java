@@ -12,7 +12,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import static org.mockito.Mockito.*;
 import org.mockito.MockitoAnnotations;
-import static de.tle.evolution.util.IsIterableContainingInOrder.contains;
 
 public class EvolutionAlgorithmTest {
 
