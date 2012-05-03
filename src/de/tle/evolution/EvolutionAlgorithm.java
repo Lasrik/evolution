@@ -15,6 +15,7 @@ public class EvolutionAlgorithm {
   protected Configuration config;
   protected Population population;
   protected Logger log;
+  protected List<Individual> currentChildren;
 
   public EvolutionAlgorithm(Configuration config) {
     this.config = config;
@@ -26,11 +27,12 @@ public class EvolutionAlgorithm {
     calculateFitness();
 
     do {
-      List<Individual> children = recombine();
-      mutate(children);
-      population.add(children);
-      
+      recombine();
+      mutate();
+
       calculateFitness();
+      population.sort();
+
       selectNextGeneration();
     } while (terminationCriteriaNotMet());
   }
@@ -46,23 +48,21 @@ public class EvolutionAlgorithm {
     log.debug(population);
   }
 
-  protected List<Individual> recombine() {
+  protected void recombine() {
     log.trace("recombine");
-    
-    List<Individual> children = new ArrayList<Individual>(config.getNumberOfChildren());
-    
+
+    currentChildren = new ArrayList<Individual>(config.getNumberOfChildren());
+
     List<List<Individual>> allParents = config.getSelector().selectParents(population);
     for (List<Individual> parents : allParents) {
       Individual child = config.getRecombinationOperator().operate(parents);
-      children.add(child);
+      currentChildren.add(child);
     }
-    
-    return children;
   }
 
-  protected void mutate(List<Individual> children) {
+  protected void mutate() {
     log.trace("mutate");
-    for (Individual individual : children) {
+    for (Individual individual : currentChildren) {
       if (mutationTakesPlace()) {
         Mutation m = chooseMutation();
         m.mutate(individual);
@@ -88,7 +88,7 @@ public class EvolutionAlgorithm {
   protected Mutation chooseMutation() {
     List<Mutation> mutations = config.getMutations();
     int number = config.getRandom().getNextInt(mutations.size());
-    
+
     return mutations.get(number);
   }
 }

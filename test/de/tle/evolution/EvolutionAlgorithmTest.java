@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
+import org.hamcrest.collection.IsIterableContainingInOrder;
 import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +13,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import static org.mockito.Mockito.*;
 import org.mockito.MockitoAnnotations;
-import static de.tle.evolution.util.IsIterableContainingInOrder.contains;
 
 public class EvolutionAlgorithmTest {
 
@@ -135,8 +135,9 @@ public class EvolutionAlgorithmTest {
     when(config.getPropabilityOfMutation()).thenReturn(100);
     when(random.getNextPercentage()).thenReturn(50);
     when(random.getNextInt(anyInt())).thenReturn(0).thenReturn(1).thenReturn(2).thenReturn(1);
+    ea.currentChildren = children;
 
-    ea.mutate(children);
+    ea.mutate();
 
     verify(mut1).mutate(child1);
     verify(mut2).mutate(child2);
@@ -149,8 +150,9 @@ public class EvolutionAlgorithmTest {
     when(config.getPropabilityOfMutation()).thenReturn(50);
     when(random.getNextPercentage()).thenReturn(30).thenReturn(60).thenReturn(30);
     when(random.getNextInt(anyInt())).thenReturn(0).thenReturn(1).thenReturn(2);
+    ea.currentChildren = children;
 
-    ea.mutate(children);
+    ea.mutate();
 
     verify(mut1).mutate(child1);
     verify(mut2).mutate(child3);
@@ -160,18 +162,27 @@ public class EvolutionAlgorithmTest {
   @Test
   public void testRecombine() {
     Selector selector = mock(Selector.class);
+    when(config.getSelector()).thenReturn(selector);
+
+    List<List<Individual>> parents = mockParents();
+    when(selector.selectParents(any(Population.class))).thenReturn(parents);
+
+    GeneticOperator operator = mock(GeneticOperator.class);
+    when(config.getRecombinationOperator()).thenReturn(operator);
+
+    when(operator.operate(anyList())).thenReturn(child1, child2, child3, child4);
+
+    ea.recombine();
+
+    assertThat(ea.currentChildren, is(children));
+  }
+
+  private List<List<Individual>> mockParents() {
     List<List<Individual>> parents = new ArrayList<List<Individual>>(children.size());
     List<Individual> parent = mock(List.class);
     for (int i = 0; i < children.size(); i++) {
       parents.add(parent);
     }
-    
-    when(selector.selectParents(any(Population.class))).thenReturn(parents);
-    
-    GeneticOperator operator = mock(GeneticOperator.class);
-    
-    when(operator.operate(anyList())).thenReturn(child1, child2, child3, child4);
-    
-    List<Individual> actualChildren = ea.recombine();
+    return parents;
   }
 }
