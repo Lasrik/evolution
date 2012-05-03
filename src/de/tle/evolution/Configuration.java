@@ -30,6 +30,16 @@ public abstract class Configuration {
 
   public abstract boolean terminationCriteriaMet(Population population);
 
+  public Comparator<Individual> getComparator() {
+    return new Comparator<Individual>() {
+
+      @Override
+      public int compare(Individual o1, Individual o2) {
+        return o1.getFitness() - o2.getFitness();
+      }
+    };
+  }
+
   public Random getRandom() {
     return this.random;
   }

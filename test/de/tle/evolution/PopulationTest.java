@@ -54,59 +54,46 @@ public class PopulationTest {
   }
 
   @Test
-  public void testSort() {
-    System.out.println("sort");
-    Population instance = new Population();
-    instance.sort();
-    fail("The test case is a prototype.");
+  public void testSize() {
+    assertThat(population.size(), is(individuals.size()));
+
+    individuals.remove(2);
+
+    assertThat(population.size(), is(individuals.size()));
   }
 
   @Test
-  public void testSize() {
-    System.out.println("size");
-    Population instance = new Population();
-    int expResult = 0;
-    int result = instance.size();
-    assertEquals(expResult, result);
-    fail("The test case is a prototype.");
+  public void testSizeOfNewPopIs0() {
+    population = new Population();
+    assertThat(population.size(), is(0));
   }
 
   @Test
   public void testGetAge() {
-    System.out.println("getAge");
-    Population instance = new Population();
-    int expResult = 0;
-    int result = instance.getAge();
-    assertEquals(expResult, result);
-    fail("The test case is a prototype.");
+    population = new Population(null, 5);
+    assertThat(population.getAge(), is(5));
   }
 
   @Test
-  public void testGetFittest() {
-    System.out.println("getFittest");
-    Population instance = new Population();
-    Individual expResult = null;
-    Individual result = instance.getFittest();
-    assertEquals(expResult, result);
-    fail("The test case is a prototype.");
+  public void testAgeOfNewPopIs0() {
+    population = new Population();
+
+    assertThat(population.getAge(), is(0));
   }
 
   @Test
   public void testGetIndividuals() {
-    System.out.println("getIndividuals");
-    Population instance = new Population();
-    List expResult = null;
-    List result = instance.getIndividuals();
-    assertEquals(expResult, result);
-    fail("The test case is a prototype.");
+    assertThat(population.getIndividuals(), is(individuals));
   }
 
   @Test
   public void testAdd() {
-    System.out.println("add");
-    List<Individual> children = null;
-    Population instance = new Population();
-    instance.add(children);
-    fail("The test case is a prototype.");
+    Individual newIndividual = new Individual(null);
+
+    assertThat(population.getIndividuals(), is(individuals));
+
+    population.add(Arrays.asList(newIndividual));
+
+    assertThat(population.individuals, hasItem(newIndividual));
   }
 }

@@ -28,26 +28,18 @@ public class Population implements Iterable<Individual> {
     individuals.add(individual);
   }
 
-  public void sort() {
-    Collections.sort(individuals);
-  }
-
   public int size() {
     return individuals.size();
   }
-  
+
   public int getAge() {
     return age;
-  }
-  
-  public Individual getFittest() {
-    return individuals.get(0);
   }
 
   public List<Individual> getIndividuals() {
     return Collections.unmodifiableList(individuals);
   }
-  
+
   @Override
   public String toString() {
     StringBuilder result = new StringBuilder();
@@ -58,9 +50,9 @@ public class Population implements Iterable<Individual> {
       result.append(individual.toString());
       result.append(",");
     }
-    
+
     result.append("]");
-    
+
     return result.toString();
   }
 

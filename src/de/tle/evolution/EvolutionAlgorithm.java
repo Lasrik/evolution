@@ -2,6 +2,8 @@ package de.tle.evolution;
 
 import de.tle.evolution.mutation.Mutation;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import org.apache.log4j.Logger;
 
@@ -25,13 +27,15 @@ public class EvolutionAlgorithm {
   public void evolve() {
     initPopulation();
     calculateFitness();
+    sort();
 
     do {
       recombine();
       mutate();
+      addChildren();
 
       calculateFitness();
-      population.sort();
+      sort();
 
       selectNextGeneration();
     } while (terminationCriteriaNotMet());
@@ -90,5 +94,14 @@ public class EvolutionAlgorithm {
     int number = config.getRandom().getNextInt(mutations.size());
 
     return mutations.get(number);
+  }
+
+  private void sort() {
+    Comparator<Individual> comparator = config.getComparator();
+    Collections.sort(population.individuals, comparator);
+  }
+
+  private void addChildren() {
+    population.add(currentChildren);
   }
 }
