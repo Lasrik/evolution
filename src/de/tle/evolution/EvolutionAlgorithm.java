@@ -44,6 +44,7 @@ public class EvolutionAlgorithm {
   protected void initPopulation() {
     log.trace("init Population");
     population = config.getFactory().createInitialPopulation(config.getPopulationSize());
+    log.trace(population);
   }
 
   protected void calculateFitness() {
@@ -72,6 +73,7 @@ public class EvolutionAlgorithm {
         m.mutate(individual);
       }
     }
+    log.trace("Children: " + currentChildren);
   }
 
   protected void selectNextGeneration() {

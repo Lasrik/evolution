@@ -1,12 +1,14 @@
 package de.tle.evolution;
 
-public class Individual implements Comparable<Individual> {
+public class Individual {
 
   protected Genom genom;
-  private int fitness = 0;
+  private int fitness;
+  private Object payload;
 
   public Individual(Genom genom) {
     this.genom = genom;
+    this.fitness = Integer.MIN_VALUE;
   }
 
   public static Individual createRandom() {
@@ -40,8 +42,11 @@ public class Individual implements Comparable<Individual> {
     return sb.toString();
   }
 
-  @Override
-  public int compareTo(Individual o) {
-    return this.fitness - o.fitness;
+  public Object getPayload() {
+    return payload;
+  }
+
+  public void setPayload(Object payload) {
+    this.payload = payload;
   }
 }
