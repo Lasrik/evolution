@@ -164,4 +164,8 @@ public class Genom {
   private void firstPartFromThisGenom(int[] newChromosomes, int randomPosition) {
     System.arraycopy(this.chromosomes, 0, newChromosomes, 0, randomPosition);
   }
+
+  public int length() {
+    return this.chromosomes.length;
+  }
 }
