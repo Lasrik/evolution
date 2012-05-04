@@ -97,7 +97,7 @@ public class EvolutionAlgorithm {
   }
 
   private void sort() {
-    Comparator<Individual> comparator = config.getComparator();
+    Comparator<Individual> comparator = config.getFitnessComparator();
     Collections.sort(population.individuals, comparator);
   }
 
