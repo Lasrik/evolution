@@ -4,9 +4,9 @@ import java.util.Arrays;
 
 public class Genom {
 
-  public final static int NUMBER_OF_CHROMOSOMES = 9;
-  public final static int MAX_CROSS_SUM = 200;
-  public final static int MAX_SINGLE_VALUE = 200;
+  public final static int NUMBER_OF_CHROMOSOMES = 7;
+  public final static int MAX_CROSS_SUM = 250;
+  public final static int MAX_SINGLE_VALUE = 250;
   private int[] chromosomes;
 
   public Genom(int[] chromosomes) {
@@ -91,7 +91,7 @@ public class Genom {
 
   public boolean isValid() {
     int crossSum = crossSum();
-    if ((crossSum > 0 && crossSum < MAX_CROSS_SUM)) {
+    if ((crossSum > 0 && crossSum <= MAX_CROSS_SUM)) {
       return true;
     }
 
@@ -133,17 +133,22 @@ public class Genom {
     int crossSum = 0;
 
     for (int i = 0; i < newChromosomes.length; i++) {
-      if (getRandom() < 0.5) {
+      if (getRandom() < 0.25) {
         continue;
       }
 
       int nextValue = createRandomChromosomeValue();
       if (crossSum + nextValue > MAX_CROSS_SUM) {
-        continue;
+        nextValue = MAX_CROSS_SUM - crossSum;
+      }
+      
+      int position = getRandomInt(newChromosomes.length);
+      while (newChromosomes[position] + nextValue > MAX_SINGLE_VALUE) {
+        position = getRandomInt(newChromosomes.length);
       }
 
       crossSum += nextValue;
-      newChromosomes[i] = nextValue;
+      newChromosomes[position] = nextValue;
     }
 
     this.chromosomes = newChromosomes;
