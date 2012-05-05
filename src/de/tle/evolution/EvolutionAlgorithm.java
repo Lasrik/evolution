@@ -2,6 +2,8 @@ package de.tle.evolution;
 
 import de.tle.evolution.mutation.Mutation;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import org.apache.log4j.Logger;
 
@@ -15,6 +17,7 @@ public class EvolutionAlgorithm {
   protected Configuration config;
   protected Population population;
   protected Logger log;
+  protected List<Individual> currentChildren;
 
   public EvolutionAlgorithm(Configuration config) {
     this.config = config;
@@ -24,13 +27,16 @@ public class EvolutionAlgorithm {
   public void evolve() {
     initPopulation();
     calculateFitness();
+    sort();
 
     do {
-      List<Individual> children = recombine();
-      mutate(children);
-      population.add(children);
-      
+      recombine();
+      mutate();
+      addChildren();
+
       calculateFitness();
+      sort();
+
       selectNextGeneration();
     } while (terminationCriteriaNotMet());
   }
@@ -38,6 +44,7 @@ public class EvolutionAlgorithm {
   protected void initPopulation() {
     log.trace("init Population");
     population = config.getFactory().createInitialPopulation(config.getPopulationSize());
+    log.trace(population);
   }
 
   protected void calculateFitness() {
@@ -46,28 +53,27 @@ public class EvolutionAlgorithm {
     log.debug(population);
   }
 
-  protected List<Individual> recombine() {
+  protected void recombine() {
     log.trace("recombine");
-    
-    List<Individual> children = new ArrayList<Individual>(config.getNumberOfChildren());
-    
+
+    currentChildren = new ArrayList<Individual>(config.getNumberOfChildren());
+
     List<List<Individual>> allParents = config.getSelector().selectParents(population);
     for (List<Individual> parents : allParents) {
       Individual child = config.getRecombinationOperator().operate(parents);
-      children.add(child);
+      currentChildren.add(child);
     }
-    
-    return children;
   }
 
-  protected void mutate(List<Individual> children) {
+  protected void mutate() {
     log.trace("mutate");
-    for (Individual individual : children) {
+    for (Individual individual : currentChildren) {
       if (mutationTakesPlace()) {
         Mutation m = chooseMutation();
         m.mutate(individual);
       }
     }
+    log.trace("Children: " + currentChildren);
   }
 
   protected void selectNextGeneration() {
@@ -88,7 +94,16 @@ public class EvolutionAlgorithm {
   protected Mutation chooseMutation() {
     List<Mutation> mutations = config.getMutations();
     int number = config.getRandom().getNextInt(mutations.size());
-    
+
     return mutations.get(number);
+  }
+
+  private void sort() {
+    Comparator<Individual> comparator = config.getFitnessComparator();
+    Collections.sort(population.individuals, comparator);
+  }
+
+  private void addChildren() {
+    population.add(currentChildren);
   }
 }
