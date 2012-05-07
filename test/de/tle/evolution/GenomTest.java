@@ -18,7 +18,7 @@ public class GenomTest {
 
   @Test
   public void testCreateRandom() {
-    Genom result = Genom.createRandom();
+    Genom result = Genom.createRandom(7, 250, 250);
     assertNotNull(result);
     assertTrue(result.isValid());
   }
@@ -92,10 +92,6 @@ public class GenomTest {
 
     private int[] randomList = new int[] {4, 5};
     private int position = 0;
-
-    public GenomWithoutRandomness() {
-      super();
-    }
 
     public GenomWithoutRandomness(int[] chromosomes) {
       super(chromosomes);

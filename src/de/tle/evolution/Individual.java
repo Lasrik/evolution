@@ -3,16 +3,16 @@ package de.tle.evolution;
 public class Individual {
 
   protected Genom genom;
-  private int fitness;
-  private Object payload;
+  private volatile Integer fitness;
+  private boolean fitnessSet = false;
 
   public Individual(Genom genom) {
     this.genom = genom;
-    this.fitness = Integer.MIN_VALUE;
+    this.fitness = null;
   }
 
-  public static Individual createRandom() {
-    return new Individual(Genom.createRandom());
+  public static Individual createRandom(int numberOfChromosomes, int maxCrossSum, int maxSingleValue) {
+    return new Individual(Genom.createRandom(numberOfChromosomes, maxCrossSum, maxSingleValue));
   }
 
   public Genom getGenom() {
@@ -23,12 +23,17 @@ public class Individual {
     this.genom = genom;
   }
 
-  public int getFitness() {
+  public Integer getFitness() {
     return fitness;
   }
 
-  public void setFitness(int fitness) {
+  public void setFitness(Integer fitness) {
+    this.fitnessSet = true;
     this.fitness = fitness;
+  }
+
+  public boolean isFitnessSet() {
+    return fitnessSet;
   }
 
   @Override
@@ -40,13 +45,5 @@ public class Individual {
     sb.append(genom.toString());
     sb.append("]} ");
     return sb.toString();
-  }
-
-  public Object getPayload() {
-    return payload;
-  }
-
-  public void setPayload(Object payload) {
-    this.payload = payload;
   }
 }
