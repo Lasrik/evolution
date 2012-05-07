@@ -5,8 +5,8 @@ import java.util.Arrays;
 public class Genom {
 
   public final static int NUMBER_OF_CHROMOSOMES = 9;
-  public final static int MAX_CROSS_SUM = 200;
-  public final static int MAX_SINGLE_VALUE = 200;
+  public final static int MAX_CROSS_SUM = 250;
+  public final static int MAX_SINGLE_VALUE = 250;
   private int[] chromosomes;
 
   public Genom(int[] chromosomes) {
