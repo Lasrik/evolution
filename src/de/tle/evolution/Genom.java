@@ -4,21 +4,25 @@ import java.util.Arrays;
 
 public class Genom {
 
-  public final static int NUMBER_OF_CHROMOSOMES = 9;
-  public final static int MAX_CROSS_SUM = 250;
-  public final static int MAX_SINGLE_VALUE = 250;
+  private int numberOfChromosomes = 7;
+  private int maxCrossSum = 250;
+  private int maxSingleValue = 250;
   private int[] chromosomes;
 
   public Genom(int[] chromosomes) {
     this.chromosomes = chromosomes;
+    this.numberOfChromosomes = chromosomes.length;
   }
 
-  public Genom() {
-    this(new int[NUMBER_OF_CHROMOSOMES]);
+  public Genom(int numberOfChromosomes, int maxCrossSum, int maxSingleValue) {
+    this.numberOfChromosomes = numberOfChromosomes;
+    this.maxCrossSum = maxCrossSum;
+    this.maxSingleValue = maxSingleValue;
+    this.chromosomes = new int[numberOfChromosomes];
   }
 
-  public static Genom createRandom() {
-    Genom instance = new Genom();
+  public static Genom createRandom(int numberOfChromosomes, int maxCrossSum, int maxSingleValue) {
+    Genom instance = new Genom(numberOfChromosomes, maxCrossSum, maxSingleValue);
     instance.createRandomChromosomes();
     return instance;
   }
@@ -40,7 +44,7 @@ public class Genom {
   }
 
   public Genom crossover(Genom other) {
-    int[] newChromosomes = new int[NUMBER_OF_CHROMOSOMES];
+    int[] newChromosomes = new int[numberOfChromosomes];
     int randomPosition = getRandomChromosomPosition();
 
     firstPartFromThisGenom(newChromosomes, randomPosition);
@@ -66,14 +70,14 @@ public class Genom {
   }
 
   public void increaseRandomChromosom() {
-    if (crossSum() >= MAX_CROSS_SUM) {
+    if (crossSum() >= maxCrossSum) {
       return;
     }
 
     boolean end = false;
     do {
       int random = getRandomChromosomPosition();
-      if (chromosomes[random] < MAX_SINGLE_VALUE) {
+      if (chromosomes[random] < maxSingleValue) {
         chromosomes[random] += 1;
         end = true;
       }
@@ -91,7 +95,7 @@ public class Genom {
 
   public boolean isValid() {
     int crossSum = crossSum();
-    if ((crossSum > 0 && crossSum < MAX_CROSS_SUM)) {
+    if (crossSum > 0 && crossSum <= maxCrossSum) {
       return true;
     }
 
@@ -116,7 +120,7 @@ public class Genom {
   }
 
   protected int createRandomChromosomeValue() {
-    return (int) (getRandom() * MAX_SINGLE_VALUE);
+    return (int) (getRandom() * maxSingleValue);
   }
 
   protected double getRandom() {
@@ -128,7 +132,7 @@ public class Genom {
   }
 
   protected void createRandomChromosomes() {
-    int[] newChromosomes = new int[NUMBER_OF_CHROMOSOMES];
+    int[] newChromosomes = new int[numberOfChromosomes];
 
     int crossSum = 0;
 
@@ -138,7 +142,7 @@ public class Genom {
       }
 
       int nextValue = createRandomChromosomeValue();
-      if (crossSum + nextValue > MAX_CROSS_SUM) {
+      if (crossSum + nextValue >= maxCrossSum) {
         continue;
       }
 
