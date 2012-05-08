@@ -11,7 +11,6 @@ public class Genom {
 
   public Genom(int[] chromosomes) {
     this.chromosomes = chromosomes;
-    this.numberOfChromosomes = chromosomes.length;
   }
 
   public Genom(int numberOfChromosomes, int maxCrossSum, int maxSingleValue) {
@@ -135,6 +134,11 @@ public class Genom {
     int[] newChromosomes = new int[numberOfChromosomes];
 
     int crossSum = 0;
+    boolean startFromEnd = false;
+
+    if (getRandom() < 0.5) {
+      startFromEnd = true;
+    }
 
     for (int i = 0; i < newChromosomes.length; i++) {
       if (getRandom() < 0.5) {
@@ -142,12 +146,18 @@ public class Genom {
       }
 
       int nextValue = createRandomChromosomeValue();
-      if (crossSum + nextValue >= maxCrossSum) {
-        continue;
+      if (crossSum + nextValue > maxCrossSum) {
+        nextValue = maxCrossSum - crossSum;
       }
 
       crossSum += nextValue;
-      newChromosomes[i] = nextValue;
+
+      int position = i;
+      if (startFromEnd) {
+        position = newChromosomes.length - (i + 1);
+      }
+
+      newChromosomes[position] = nextValue;
     }
 
     this.chromosomes = newChromosomes;
@@ -171,5 +181,27 @@ public class Genom {
 
   public int length() {
     return this.chromosomes.length;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final Genom other = (Genom) obj;
+    if (!Arrays.equals(this.chromosomes, other.chromosomes)) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 3;
+    hash = 59 * hash + Arrays.hashCode(this.chromosomes);
+    return hash;
   }
 }

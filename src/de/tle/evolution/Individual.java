@@ -3,7 +3,7 @@ package de.tle.evolution;
 public class Individual {
 
   protected Genom genom;
-  private volatile Integer fitness;
+  private Integer fitness;
   private boolean fitnessSet = false;
 
   public Individual(Genom genom) {
@@ -45,5 +45,27 @@ public class Individual {
     sb.append(genom.toString());
     sb.append("]} ");
     return sb.toString();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final Individual other = (Individual) obj;
+    if (this.genom != other.genom && (this.genom == null || !this.genom.equals(other.genom))) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 79 * hash + (this.genom != null ? this.genom.hashCode() : 0);
+    return hash;
   }
 }
