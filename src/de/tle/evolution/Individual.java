@@ -5,6 +5,7 @@ public class Individual {
   protected Genom genom;
   private Integer fitness;
   private boolean fitnessSet = false;
+  private Object customPayload;
 
   public Individual(Genom genom) {
     this.genom = genom;
@@ -41,9 +42,11 @@ public class Individual {
     StringBuilder sb = new StringBuilder();
     sb.append("{ -");
     sb.append(fitness);
-    sb.append("- [");
+    sb.append(" (");
+    sb.append(customPayload);
+    sb.append(")- ");
     sb.append(genom.toString());
-    sb.append("]} ");
+    sb.append("} ");
     return sb.toString();
   }
 
@@ -67,5 +70,13 @@ public class Individual {
     int hash = 7;
     hash = 79 * hash + (this.genom != null ? this.genom.hashCode() : 0);
     return hash;
+  }
+
+  public Object getCustomPayload() {
+    return customPayload;
+  }
+
+  public void setCustomPayload(Object customPayload) {
+    this.customPayload = customPayload;
   }
 }
