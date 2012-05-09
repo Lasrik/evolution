@@ -1,9 +1,11 @@
 package de.tle.evolution;
 
 import java.util.Arrays;
+import org.hamcrest.CoreMatchers;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+import static org.hamcrest.CoreMatchers.*;
 
 public class GenomTest {
 
@@ -48,16 +50,16 @@ public class GenomTest {
 
   @Test
   public void testCrossover() {
-    int[] testChromosomes1 = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
-    int[] testChromosomes2 = new int[]{10, 20, 30, 40, 50, 60, 70, 80, 90};
+    int[] testChromosomes1 = new int[]{1, 2, 3, 4, 5, 6, 7};
+    int[] testChromosomes2 = new int[]{10, 20, 30, 40, 50, 60, 70};
 
     Genom parent1 = new GenomWithoutRandomness(testChromosomes1);
     Genom parent2 = new Genom(testChromosomes2);
 
     Genom child = parent1.crossover(parent2);
 
-    int[] newChromosome = new int[]{1, 2, 3, 4, 50, 60, 70, 80, 90};
-    assertTrue(Arrays.equals(newChromosome, child.getChromosomes()));
+    int[] newChromosome = new int[]{1, 2, 3, 4, 50, 60, 70};
+    assertThat(newChromosome, is(child.getChromosomes()));
   }
 
   @Test

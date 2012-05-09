@@ -141,7 +141,7 @@ public class Genom {
     }
 
     for (int i = 0; i < newChromosomes.length; i++) {
-      if (getRandom() < 0.5) {
+      if (getRandom() < 0.25) {
         continue;
       }
 
